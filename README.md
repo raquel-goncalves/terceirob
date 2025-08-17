@@ -34,7 +34,7 @@
                     <h1 class="display-4 text-white fst-italic fw-bold">Boas-vindas a</h1>
                     <img src="img/logo-2.png" alt="Logotipo secundário da Tropicália" class="mb-3" width="563"
                         height="278" loading="lazy">
-                    <a href="#tropicalia"
+                    <a href="#Enhypen"
                         class="btn btn-primary btn-lg botao-inicio fw-semibold">Quero
                         conhecer!</a>
                 </div>
@@ -42,15 +42,11 @@
             </div>
         </section>
 
-        <section id="tropicalia" class="my-5 pt-6 secao-tropicalia">
+        <section id="Enhypen" class="my-5 pt-6 secao-tropicalia">
             <div class="container d-flex align-items-center ">
                   <div class="col-5">
-                    <h2>O que foi a Tropicália?</h2>
-                    <p class="p-2">A Tropicália, também conhecida como Tropicalismo, foi um movimento cultural
-                        brasileiro que surgiu na década de 1960, tendo seu auge entre 1967 e 1968. Esse movimento
-                        abrangeu várias expressões artísticas, como a música, o cinema, o teatro e as artes plásticas, e
-                        teve como principal característica a mistura de elementos da cultura brasileira tradicional com
-                        influências estrangeiras, especialmente do rock e da música pop.</p>
+                    <h2>Enhypen</h2>
+                    <p class="p-2">ENHYPEN é um boy group sulcoreano de sete membros foormado atravez do reality show I-LAND sob o selo BE:LIFT LAB, uma subsidiária da HYBE corporation. O grupo fez sua estreia com seu primeiro mini-álbum, Border:Day One, em 30 de novembro de 2020. Seu nome simboliza conexão, descoberta e crescimento. O grupo é composto por sete membros: Yang Jungwon, Lee Heeseung, Park Jay, Sim Jake, Park Sunghoon, Sunoo e Ni-ki. </p>
                 </div>
             </div>
         </section>

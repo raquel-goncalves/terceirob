@@ -1,0 +1,87 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+* {
+  font-family: "Poppins";
+  background-color: black;
+  color: white;
+}
+
+.header {
+  position: static;
+  top: 0;
+  left: 0;
+  width: 95%;
+  padding: 0px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.linha {
+  width: 100%;
+  border-bottom: 1px solid #ffffff;
+}
+
+.linha1 {
+  width: 100%;
+  border-bottom: 1px solid #ffffff;
+  padding-top: 17px;
+}
+
+.nav a {
+  text-decoration: none;
+  margin-right: 15px;
+  font-size: 15px;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+ul.nav li {
+  display: inline;
+}
+
+.logo {
+  margin-top: 0;
+  margin-left: 0;
+  justify-content: space-around;
+  align-items: start;
+  position: left;
+  float: left;
+  text-align: left;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 31px;
+}
+
+#img1 {
+  padding-top: 15px;
+  width: 100%;
+}
+
+#img2 {
+  width: 18%;
+}
+
+#img3 {
+  width: 18%;
+}
+
+#img4 {
+  width: 18%;
+}
+
+#img5 {
+  width: 18%;
+}
+
+h1 {
+  text-align: center;
+}
+
+h3 {
+  padding-left: 10px;
+}
+
+p {
+  padding-left: 10px;
+}

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locais Acessíveis - Encontre Onde Ir!</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIINfQ7oWA8x9ppvLG3KD9SCAOGd4WBYLh4="
+          crossorigin=""/>
+
+    <style>
+        /* ---------------------------------------------------- */
+        /* 1. RESET BÁSICO E FONTES ACESSÍVEIS */
+        /* ---------------------------------------------------- */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Use fontes claras e sem serifa (serif) para melhor legibilidade */
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6; /* Espaçamento entre linhas para melhor leitura */
+            background-color: #f5f5f5; /* Fundo claro */
+            color: #333; /* Cor de texto escuro para alto contraste */
+        }
+
+        /* ---------------------------------------------------- */
+        /* 2. ACESSIBILIDADE ESSENCIAL: FOCO E CONTRASTE */
+        /* ---------------------------------------------------- */
+
+        /* Alto Contraste para o Foco do Teclado (MUITO IMPORTANTE!) */
+        a:focus, button:focus, input:focus, select:focus, textarea:focus {
+            outline: 4px solid #0056b3;
+            outline-offset: 2px; 
+        }
+
+        /* Garante o alto contraste dos links */
+        a:link, a:visited {
+            color: #0056b3; 
+            text-decoration: underline; 
+        }
+
+        a:hover {
+            color: #007bff;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 3. ESTRUTURA E LAYOUT GERAL */
+        /* ---------------------------------------------------- */
+
+        header, main, footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 4. CABEÇALHO E NAVEGAÇÃO */
+        /* ---------------------------------------------------- */
+
+        header {
+            background-color: #0056b3; 
+            color: white; 
+            padding: 15px 20px;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+        }
+
+        /* Link para 'Pular para o Conteúdo Principal' */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #ffcc00;
+            color: black;
+            padding: 8px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            top: 0; 
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a:link, nav a:visited {
+            color: white;
+            text-decoration: none;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 5. SEÇÕES DE CONTEÚDO E BUSCA */
+        /* ---------------------------------------------------- */
+        
+        main section {
+            padding: 30px 0;
+        }
+
+        .local-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .local-card img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px 0;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 6. SEÇÃO DE MAPA */
+        /* ---------------------------------------------------- */
+
+        #mapa-container {
+            height: 400px; /* **ESSENCIAL** para o mapa aparecer */
+            background-color: #ccc;
+            margin-top: 20px;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* 7. ESTILOS DE FORMULÁRIO */
+        /* ---------------------------------------------------- */
+
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #0056b3;
+            padding: 0 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="email"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="checkbox"] + label {
+            display: inline-block;
+            font-weight: normal;
+            margin-left: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="reset"] {
+            background-color: #6c757d;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Mensagem de erro de validação (adicionada pelo JS) */
+        .error-message {
+            color: #dc3545;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        /* ---------------------------------------------------- */
+        /* 8. RODAPÉ */
+        /* ---------------------------------------------------- */
+
+        footer {
+            border-top: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        footer nav ul {
+            justify-content: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#conteudo-principal" class="skip-link">Pular para o Conteúdo Principal</a>
+        <h1>Locais Acessíveis: Inclusão e Informação</h1>
+        
+        <nav aria-label="Navegação Principal">
+            <ul>
+                <li><a href="#busca-titulo">Buscar Locais</a></li>
+                <li><a href="#mapa-titulo">Ver Mapa</a></li>
+                <li><a href="#cadastro-titulo">Cadastrar Local</a></li>
+                <li><a href="sobre.html">Sobre</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main id="conteudo-principal">
+        
+        <section aria-labelledby="busca-titulo">
+            <h2 id="busca-titulo">Encontre Locais Acessíveis Perto de Você</h2>
+            
+            <form action="/buscar-locais" method="GET">
+                <div>
+                    <label for="cidade">Cidade ou Bairro:</label>
+                    <input type="text" id="cidade" name="cidade" required>
+                </div>
+                <div>
+                    <label for="tipo-local">Tipo de Local:</label>
+                    <select id="tipo-local" name="tipo-local">
+                        <option value="">Todos</option>
+                        <option value="restaurante">Restaurante</option>
+                        <option value="parque">Parque</option>
+                    </select>
+                </div>
+                <button type="submit">Buscar Locais</button>
+            </form>
+        </section>
+
+        <section aria-labelledby="destaques-titulo">
+            <h2 id="destaques-titulo">Locais em Destaque</h2>
+            
+            <article class="local-card">
+                <h3>Restaurante Sabor Inclusivo</h3>
+                
+                <img src="https://via.placeholder.com/600x200?text=Foto+do+Local+com+Acessibilidade" alt="Entrada do Restaurante Sabor Inclusivo com rampa de acesso e piso tátil.">
+                
+                <p><strong>Acessibilidade:</strong> Rampa, Banheiro Acessível, Cardápio em Braille.</p>
+                
+                <a href="detalhes-local-1.html">Ver Mais Detalhes</a>
+            </article>
+            
+        </section>
+
+        <hr>
+
+        <section aria-labelledby="mapa-titulo" class="secao-mapa">
+            <h2 id="mapa-titulo">Mapa de Locais Acessíveis</h2>
+            
+            <div id="mapa-container" role="region" aria-label="Mapa interativo mostrando locais acessíveis">
+                </div>
+            
+            <p style="margin-top: 15px;">Use o mapa para explorar locais próximos e verificar o nível de acessibilidade.</p>
+        </section>
+        
+        <hr>
+
+        <section aria-labelledby="cadastro-titulo" class="secao-cadastro">
+            <h2 id="cadastro-titulo">Compartilhe um Local Acessível</h2>
+            <p>Conhece um local que merece destaque? Ajude a nossa comunidade cadastrando-o abaixo!</p>
+            
+            <form action="/cadastrar-local" method="POST" id="form-cadastro-local">
+                
+                <div id="validation-message" class="error-message" style="display: none;" role="alert" aria-live="assertive">
+                    Por favor, selecione pelo menos uma opção de acessibilidade.
+                </div>
+
+                <fieldset>
+                    <legend>Informações do Local</legend>
+                    
+                    <div>
+                        <label for="nome-local">Nome do Local <span aria-hidden="true">*</span></label>
+                        <input type="text" id="nome-local" name="nome" required aria-describedby="dica-nome">
+                        <small id="dica-nome" style="display: block; margin-top: -10px; color: #666;">Ex: Parque Municipal, Restaurante X</small>
+                    </div>
+
+                    <div>
+                        <label for="endereco">Endereço Completo <span aria-hidden="true">*</span></label>
+                        <input type="text" id="endereco" name="endereco" required>
+                    </div>
+                </fieldset>
+
+                <fieldset id="fieldset-recursos">
+                    <legend>Recursos de Acessibilidade <span aria-hidden="true">*</span></legend>
+                    
+                    <div>
+                        <input type="checkbox" id="rampa" name="recurso" value="rampa">
+                        <label for="rampa">Rampa de Acesso (ou elevador)</label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="banheiro-acessivel" name="recurso" value="banheiro">
+                        <label for="banheiro-acessivel">Banheiro Acessível</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="braille" name="recurso" value="braille">
+                        <label for="braille">Cardápio/Sinalização em Braille</label>
+                    </div>
+                    
+                    <div>
+                        <input type="checkbox" id="piso-tatil" name="recurso" value="piso">
+                        <label for="piso-tatil">Piso Tátil</label>
+                    </div>
+                </fieldset>
+                
+                <button type="submit">Cadastrar Local</button>
+                <button type="reset">Limpar Formulário</button>
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Locais Acessíveis. Todos os direitos reservados.</p>
+        <nav aria-label="Links do Rodapé">
+            <ul>
+                <li><a href="politica.html">Política de Privacidade</a></li>
+                <li><a href="acessibilidade.html">Declaração de Acessibilidade</a></li>
+            </ul>
+        </nav>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20n6a9Kx/waX56n88gX9N/94X5k8fM9d/J8Rj4/zX00="
+            crossorigin=""></script>
+
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20n6a9Kx/waX56n88gX9N/94X5k8fM9d/J8Rj4/zX00="
+            crossorigin=""></script>
+
+    <script>
+        
+        // Garante que o código só rode depois que o HTML estiver totalmente carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // ----------------------------------------------------
+            // INICIALIZAÇÃO DO MAPA (LEAFLET)
+            // ----------------------------------------------------
+
+            // 1. Coordenadas de exemplo (Praça da Sé, São Paulo)
+            const coordenadasIniciais = [-23.5505, -46.6333]; 
+            const zoomInicial = 13;
+            const mapaContainer = document.getElementById('mapa-container');
+            
+            // Verifica se o elemento do mapa realmente existe antes de tentar inicializar
+            if (mapaContainer) {
+                
+                // 2. Cria o objeto mapa no div "mapa-container"
+                const mapa = L.map('mapa-container').setView(coordenadasIniciais, zoomInicial);
+
+                // 3. Adiciona os "tiles" (as imagens que formam o mapa)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(mapa);
+
+                // 4. Adiciona um marcador de exemplo
+                L.marker([-23.5489, -46.6388]).addTo(mapa)
+                    .bindPopup('<b>Restaurante Sabor Inclusivo</b><br>Rampa, Banheiro Acessível.')
+                    .openPopup();
+                    
+            } else {
+                console.error("Erro: Elemento com ID 'mapa-container' não encontrado.");
+            }
+
+
+            // ----------------------------------------------------
+            // VALIDAÇÃO BÁSICA DO FORMULÁRIO DE CADASTRO
+            // ----------------------------------------------------
+
+            const formCadastro = document.getElementById('form-cadastro-local');
+            const recursosCheckboxes = document.querySelectorAll('input[name="recurso"]');
+            const validationMessage = document.getElementById('validation-message');
+
+            if (formCadastro) {
+                formCadastro.addEventListener('submit', function(event) {
+                    let checkedCount = 0;
+
+                    recursosCheckboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            checkedCount++;
+                        }
+                    });
+
+                    if (checkedCount === 0) {
+                        event.preventDefault(); 
+                        validationMessage.style.display = 'block'; 
+                        
+                        // Garante o foco para a acessibilidade
+                        validationMessage.setAttribute('tabindex', '-1'); 
+                        validationMessage.focus(); 
+                        
+                        document.getElementById('fieldset-recursos').style.borderColor = '#dc3545';
+                        
+                    } else {
+                        validationMessage.style.display = 'none'; 
+                        alert('Local cadastrado com sucesso! (Simulação de envio)'); 
+                        // event.preventDefault(); // Descomente esta linha para evitar que a página recarregue após o alerta de simulação.
+                    }
+                });
+            }
+
+        }); // Fim do DOMContentLoaded
+        
+    </script>
+
+</body>
+</html>
